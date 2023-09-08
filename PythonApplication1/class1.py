@@ -1,5 +1,6 @@
-
-print("hello11")
+def add(x, y):
+       x = x+ y
+       print(x)
 
 
 
