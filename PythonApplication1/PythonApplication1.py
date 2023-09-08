@@ -1,11 +1,4 @@
-from class1 import add
+from class1 import Workout
 
-print("hi")
-print("this is a change")
-print("hi")
-print("hiiiii")
-print("hello")
-print("iiiii")
-y = 4
-x = 0
-add(x,y)
+w1 = Workout("Bicep Curl", 3, 10)
+w1.newfunc()
