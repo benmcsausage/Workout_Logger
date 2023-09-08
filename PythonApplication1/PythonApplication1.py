@@ -5,4 +5,5 @@ print("hi")
 print("hiiiii")
 print("hello")
 print("iiiii")
+y = 0
 x = 0
