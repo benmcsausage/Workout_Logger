@@ -1,4 +1,4 @@
-
+import class1
 print("hi")
 print("this is a change")
 print("hi")
