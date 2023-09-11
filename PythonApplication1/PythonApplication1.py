@@ -1,3 +1,3 @@
 from class1 import Workout
-
-Workout.ask()
+exerciseMatrix = []
+Workout.makeGui(exerciseMatrix)
