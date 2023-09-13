@@ -1,8 +1,11 @@
+from ast import Lambda
 from sqlite3 import paramstyle
 import pandas as pd
 import tkinter as tk
 from tkinter import ttk
 from openpyxl import load_workbook
+global exerciseMatrix
+exerciseMatrix = []
 class PreviousWorkouts(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -36,31 +39,37 @@ class NewWorkout(tk.Frame):
             exercise = exercise_entry.get()
             sets = int(sets_entry.get())
             global params
-            params = [exercise, sets]       
-        def askInfo():
-            def getInput1():
-                global reps, weight
-                reps = []
-                weight = []
-                reps.append(int(reps_entry.get()))
-                weight.append(int(weight_entry.get()))
-                params.append(reps, weight)
+            params = [exercise, sets]
+        def destroyWidgets1(entries,labels):
+            for i in range(0,params[1]*2):
+                entries[i].destroy()
+                labels[i].destroy()           
+        def getInput1(reps, weight, entries,labels):
+            for i in range(0,(params[1])*2-1):
+                reps.append(int(entries[i].get()))
+                weight.append(int(entries[i+1].get()))
+            params.append(reps)
+            params.append(weight)
+            destroyWidgets1(entries,labels)
+        def askInfo():           
             reps = []
             weight = []
-            sub_btn=tk.Button(self,text = 'Submit', command = combinedFunc(getInput1))
-            sub_btn.grid(row = 20, column = 2)           
+            labels = []
+            entries = []                             
             if(params[1] > 0):
-                for i in range(0,params[1]):
-                    reps_label = tk.Label(root, text = "How many reps did you do in set " + str(i) +"?")
-                    reps_label.grid(row = i)
-                    reps_entry = tk.Entry(self)
-                    reps_entry.grid(row = i+2, column  =1) 
-                    reps.append(int(reps_label.get()))
-                    weight_label = tk.Label(root, text = "How much weight did you use in set " + str(i) +"?")
-                    weight_label.grid(row = i+1)
-                    weight_entry = tk.Entry(self)
-                    weight_entry.grid(row = i+3, column  =1) 
-                    weight.append(int(weight_label.get()))
+                for i in range(0,params[1]*2-1):
+                    labels.append(tk.Label(self, text = "How many reps did you do in set " + str(i+1) +"?"))
+                    labels[i].grid(row = i+3, column = 0)                   
+                    labels.append(tk.Label(self, text = "How much weight did you use in set " + str(i+1) +"?"))
+                    labels[i+1].grid(row = i++4, column = 0)
+            if(params[1]> 0):        
+                for i in range(0,params[1]*2-1):
+                    entries.append(tk.Entry(self))
+                    entries[i].grid(row = i+3, column  =1)
+                    entries.append(tk.Entry(self))
+                    entries[i+1].grid(row = i+4, column  =1)
+            sub_btn=tk.Button(self,text = 'Submit', command = lambda: getInput1(reps,weight,entries,labels))
+            sub_btn.grid(row = 0, column = 3) 
                         
         self.frame = tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="NewWorkout Page")
@@ -75,7 +84,7 @@ class NewWorkout(tk.Frame):
         sets_label.grid(row = 3)
         sets_entry = tk.Entry(self)
         sets_entry.grid(row = 3, column = 1)
-        sub_btn=tk.Button(self,text = 'Submit', command = combinedFunc(getInput,destroyWidgets, askInfo))
+        sub_btn=tk.Button(self,text = 'Submit', command = combinedFunc(getInput, destroyWidgets, askInfo))
         sub_btn.grid(row = 4, column = 2)
         
     
@@ -97,11 +106,11 @@ class MainApplication(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.title("Workout Logger 1.0")
-        self.minsize(500,200)
+        self.minsize(800,600)
         # creating a frame and assigning it to container
         container = tk.Frame(self, height=400, width=600)
         # specifying the region where the frame is packed in root
-        container.pack(side="top", fill="both", expand=True)
+        container.grid(row = 0)
 
         # configuring the location of the container using grid
         container.grid_rowconfigure(0, weight=1)
