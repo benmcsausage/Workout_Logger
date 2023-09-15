@@ -2,6 +2,7 @@ from ast import Lambda
 from sqlite3 import paramstyle
 import pandas as pd
 import tkinter as tk
+import _sqlite3
 from tkinter import ttk
 from openpyxl import load_workbook
 global exerciseMatrix
@@ -40,17 +41,19 @@ class NewWorkout(tk.Frame):
             sets = int(sets_entry.get())
             global params
             params = [exercise, sets]
-        def destroyWidgets1(entries,labels):
+        def destroyWidgets1(entries,labels,sub_btn):
+            sub_btn.destroy()
             for i in range(0,params[1]*2):
                 entries[i].destroy()
-                labels[i].destroy()           
-        def getInput1(reps, weight, entries,labels):
+                labels[i].destroy()
+            recreateWidgets()   
+        def getInput1(reps, weight, entries, labels, sub_btn):
             for i in range(0,(params[1])*2-1):
                 reps.append(int(entries[i].get()))
                 weight.append(int(entries[i+1].get()))
             params.append(reps)
             params.append(weight)
-            destroyWidgets1(entries,labels)
+            destroyWidgets1(entries,labels,sub_btn)
         def askInfo():           
             reps = []
             weight = []
@@ -68,9 +71,22 @@ class NewWorkout(tk.Frame):
                     entries[i].grid(row = i+3, column  =1)
                     entries.append(tk.Entry(self))
                     entries[i+1].grid(row = i+4, column  =1)
-            sub_btn=tk.Button(self,text = 'Submit', command = lambda: getInput1(reps,weight,entries,labels))
+            sub_btn=tk.Button(self,text = 'Submit', command = lambda: [getInput1(reps,weight,entries,labels, sub_btn)])
             sub_btn.grid(row = 0, column = 3) 
-                        
+        def recreateWidgets():
+            x = 0
+            Main_button=ttk.Button(self, text = "Main", command = lambda : controller.show_frame(Main))
+            Main_button.grid(row = 1, column = 0, padx = 5, pady = 5)
+            exercise_label = tk.Label(self, text = "What exercise did you do?")
+            exercise_label.grid(row = 2)                 
+            exercise_entry = tk.Entry(self)
+            exercise_entry.grid(row = 2, column  =1)        
+            sets_label = tk.Label(self, text = "How many sets did you do?")
+            sets_label.grid(row = 3)
+            sets_entry = tk.Entry(self)
+            sets_entry.grid(row = 3, column = 1)
+            sub_btn=tk.Button(self,text = 'Submit', command = combinedFunc(getInput, destroyWidgets, askInfo))
+            sub_btn.grid(row = 4, column = 2)
         self.frame = tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="NewWorkout Page")
         label.grid(row = 0)
@@ -133,34 +149,6 @@ class MainApplication(tk.Tk):
         frame = self.frames[cont]
         # raises the current frame to the top
         frame.tkraise()
-        """
-        root = Tk()
-        root.title("Workout Logger 1.0")
-        root.minsize(200,200)
-        root.maxsize(500,500)
-        text = StringVar()
-        text1 = IntVar()
-        exercise = ""
-        sets = 3
-        Label(root, text = "What exercise did you do?").grid(row = 0)                 
-        exercise_entry = Entry(root, text = exercise,width=22).grid(row = 0, column = 1)  
-        Label(root, text = "How many sets did you do?").grid(row = 1)
-        sets_entry = Entry(root, text1 = sets, width = 22).grid(row = 1, column = 1)
-        sub_btn=Button(root,text = 'Submit')
-        sub_btn.grid(row = 2, column = 2)    
-        sets = Spinbox(root, from_ = 0, to = 10)
-        sets.grid(row = 1, column = 1)
-        reps = []
-        weight = []
-        if(sets > 0):
-            for i in range(0,sets):
-                Label(root, text = "How many reps did you do in set " + str(i) +"?").grid(row = i+2)
-                reps.append(int(Entry(root, width = 22)))
-                Label(root, text = "How much weight did you use in set " + str(i) +"?").grid(row = i+3)
-                weight.append(int(Entry(root, width =22)))      
-        mainloop()
-        Workout.fillInfo(exercise, sets,reps, weight,exerciseMatrix)
-        """
 
 class Info:    
     def makeSheet(exerciseMatrix):
@@ -175,21 +163,6 @@ class Info:
             exerciseInfo.append(weight[i])
         exerciseMatrix.append(exerciseInfo)
         Info.makeSheet(exerciseMatrix)
-    """
-    def ask():
-        numberOfUses = 0
-        exerciseMatrix = []
-        numExercise = int(input("How many different exercises did you do in your workout?Please enter numbers only\n"))
-        for i in range(0,numExercise):
-            exercise = input("What exercise did you do?\n")
-            sets = int(input("How many sets of " + exercise + " did you do?\n"))
-            reps, weight = [],[]
-            for i in range(0,sets):
-                reps.append(int(input("How many reps of " + exercise + " did you do in set number " + str(i) + "?\n")))
-                weight.append(int(input("How much weight did you use for set number "+ str(i)+ " of " + exercise)))
-            Workout.fillInfo(exercise,sets,reps,weight,exerciseMatrix)
-        print(exerciseMatrix)
-    """
 if __name__ == "__main__":
     root = MainApplication()
     root.mainloop()
