@@ -77,7 +77,7 @@ class NewWorkout(tk.Frame):
                 for i in range(0,params[0]*2-1):
                     labels.append(tk.Label(self, text = "What is the name of exercise " + str(i+1) + "?"))
                     labels[i].grid(row = i+3, column = 0)                   
-                    labels.append(tk.Label(self, text = "How many sets did you do for exerise " +str(i+1) + "?"))
+                    labels.append(tk.Label(self, text = "How many sets did you do for exercise " +str(i+1) + "?"))
                     labels[i+1].grid(row = i+4, column = 0)
             if(params[0]> 0):        
                 for i in range(0,params[0]*2-1):
@@ -92,40 +92,47 @@ class NewWorkout(tk.Frame):
             entries = []
             reps = []
             weight = []
-            print(params)
             y = 0
             w= 0
+            z = 0
+            u = 0
             for x in range(0, params[0]):
                 labels.append(tk.Label(self, text = params[1][x]))
                 labels[x+y].grid(row = x+y+3, column = 0)
                 if x == 0:
-                    for i in range(0,params[2][x]):                   
+                    for i in range(0,params[2][x]):
                         labels.append(tk.Label(self, text = "How many reps did you do in set " +str(i+1) + "?"))                       
-                        labels[x+i*2+1].grid(row = x+w+4, column = 0)                   
+                        labels[x+i*2+1].grid(row = x+w+4, column = 0)
                         labels.append(tk.Label(self, text = "How much weight did you use in set " + str(i+1) + "?"))
-                        labels[x+i*2+2].grid(row = x+w+5, column = 0)      
+                        labels[x+i*2+2].grid(row = x+w+5, column = 0)
+                        if params[2][x] != 1:
+                            w+=2
                     for i in range(0,params[2][x]):
                         entries.append(tk.Entry(self))
-                        entries[x+i*2].grid(row = x+w+4, column  =1)
+                        entries[x-z+i*2].grid(row = x+u+4, column  =1)
                         entries.append(tk.Entry(self))
-                        entries[x+i*2+1].grid(row = x+w+5, column  =1)
-                    if params[2][x] != 1:
-                        w+=2
+                        entries[x-z+1+i*2].grid(row = x+u+5, column  =1)
+                        if params[2][x] != 1:
+                            u+=2
                 else:
-                    for i in range(0,params[2][x]):                   
+                    for i in range(0,params[2][x]):
                         labels.append(tk.Label(self, text = "How many reps did you do in set " +str(i+1) + "?"))                       
-                        labels[x+y+1].grid(row = x+w+4, column = 0)                   
+                        labels[x+w+1].grid(row = x+w+4, column = 0)                   
                         labels.append(tk.Label(self, text = "How much weight did you use in set " + str(i+1) + "?"))
-                        labels[x+y+2].grid(row = x+w+5, column = 0)      
+                        labels[x+w+2].grid(row = x+w+5, column = 0)
+                        if params[2][x] != 1:
+                            w+=2
                     for i in range(0,params[2][x]):
                         entries.append(tk.Entry(self))
-                        entries[x+y].grid(row = x+w+4, column  =1)
+                        entries[x-z+u].grid(row = x+u+4, column  =1)
                         entries.append(tk.Entry(self))
-                        entries[x+y+1].grid(row = x+w+5, column  =1)
-                    if params[2][x] != 1:
-                        w+=2
+                        entries[x-z+1+u].grid(row = x+u+5, column  =1)
+                        if params[2][x] != 1:
+                            u+=2
                 y+=params[2][x]*2
-                w+=2
+                z+=1
+                print(labels)
+                print(entries)
             sub_btn=tk.Button(self,text = 'Submit', command = lambda: [getInput1(reps, weight,entries,labels,sub_btn)])
             sub_btn.grid(row = params[0]*2+5+y, column = 1)
         """
