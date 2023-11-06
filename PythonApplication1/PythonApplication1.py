@@ -7,6 +7,7 @@ import _sqlite3
 from tkinter import ttk
 from openpyxl import load_workbook
 global exerciseMatrix
+
 exerciseMatrix = []
 class PreviousWorkouts(tk.Frame):
     def __init__(self, parent, controller):
@@ -25,13 +26,17 @@ class Progress(tk.Frame):
         Main_button.grid(row = 1, column = 0, padx = 5, pady = 5)
         # We use the switch_window_button in order to call the show_frame() method as a lambda function
 class NewWorkout(tk.Frame):
+    global params
+    params = []
     def __init__(self, parent, controller):
         self.x = 0
+        self.frame = tk.Frame.__init__(self, parent)
         def combinedFunc(*funcs):
             def inner_combined_func(*args, **kwargs):
                 for f in funcs:
                     f(*args, **kwargs)
             return inner_combined_func
+        
         """
         def destroyWidgets():
             exercise_label.destroy()
@@ -40,14 +45,15 @@ class NewWorkout(tk.Frame):
             sets_entry.destroy()
             sub_btn.destroy()
         """
-        def destroyWidgets():
+        def destroyWidgets(exnum_label, exnum_entry, sub_btn):
             exnum_entry.destroy()
             exnum_label.destroy()
             sub_btn.destroy()
-        def getInput():
-            ex_num = int(exnum_entry.get())
-            global params
-            params = [ex_num]
+            print("hello")
+        def getInput(exnum_entry):
+            ex_num = int(exnum_entry.get())          
+            params.append(ex_num)
+            print(params)
         """
         def getInput():
             exercise = exercise_entry.get()
@@ -57,10 +63,19 @@ class NewWorkout(tk.Frame):
         """        
         def destroyWidgets1(entries,labels,sub_btn):
             sub_btn.destroy()
-            for i in range(0,params[0]*2):
+            for i in range(0,len(entries)):
                 entries[i].destroy()
+            for i in range(0,len(labels)):
                 labels[i].destroy()
-            recreateWidgets()   
+            recreateWidgets()
+        def destroyWidgets2(entries,labels,sub_btn):
+            sub_btn.destroy()
+            for i in range(0,len(entries)):
+                entries[i].destroy()
+            for i in range(0,len(labels)):
+                labels[i].destroy()
+            recreateWidgets1()
+        
         def getInput1(exercises, sets, entries, labels, sub_btn):
             for i in range(0,(params[0])*2-1, 2):
                 exercises.append(entries[i].get())
@@ -68,7 +83,15 @@ class NewWorkout(tk.Frame):
             params.append(exercises)
             params.append(sets)
             destroyWidgets1(entries,labels,sub_btn)
+        def getInput2(reps, weight, entries, labels, sub_btn):
+            for i in range(0,(params[0])*2-1, 2):
+                reps.append(entries[i].get())
+                weight.append(int(entries[i+1].get()))
+            params.append(reps)
+            params.append(weight)
+            destroyWidgets2(entries,labels,sub_btn)
         def askInfo():
+            print("hello")
             labels = []
             entries = []
             exercises = []
@@ -133,8 +156,20 @@ class NewWorkout(tk.Frame):
                 z+=1
                 print(labels)
                 print(entries)
-            sub_btn=tk.Button(self,text = 'Submit', command = lambda: [getInput1(reps, weight,entries,labels,sub_btn)])
+            sub_btn=tk.Button(self,text = 'Submit', command = lambda: [getInput2(reps, weight,entries,labels,sub_btn)])
             sub_btn.grid(row = params[0]*2+5+y, column = 1)
+        def recreateWidgets1():
+            label = tk.Label(self, text="NewWorkout Page")
+            label.grid(row = 0)
+            Main_button=ttk.Button(self, text = "Main", command = lambda : controller.show_frame(Main))
+            Main_button.grid(row = 1, column = 0, padx = 5, pady = 5)
+            exnum_label = tk.Label(self, text = "How many different exercises did you do?")
+            exnum_label.grid(row = 2)
+            exnum_entry = tk.Entry(self)
+            exnum_entry.grid(row = 2, column = 1)
+            sub_btn=tk.Button(self,text = 'Submit', command = lambda : [getInput(exnum_entry), destroyWidgets(exnum_label, exnum_entry, sub_btn), askInfo()])
+            sub_btn.grid(row = 2, column = 2)
+        recreateWidgets1()
         """
         def askInfo():           
             reps = []
@@ -181,17 +216,8 @@ class NewWorkout(tk.Frame):
             sub_btn.grid(row = 4, column = 2)
         """
         
-        self.frame = tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="NewWorkout Page")
-        label.grid(row = 0)
-        Main_button=ttk.Button(self, text = "Main", command = lambda : controller.show_frame(Main))
-        Main_button.grid(row = 1, column = 0, padx = 5, pady = 5)
-        exnum_label = tk.Label(self, text = "How many different exercises did you do?")
-        exnum_label.grid(row = 2)
-        exnum_entry = tk.Entry(self)
-        exnum_entry.grid(row = 2, column = 1)
-        sub_btn=tk.Button(self,text = 'Submit', command = combinedFunc(getInput, destroyWidgets, askInfo))
-        sub_btn.grid(row = 2, column = 2)
+        
+        
         """
         exercise_label = tk.Label(self, text = "What exercise did you do?")
         exercise_label.grid(row = 2)                 
